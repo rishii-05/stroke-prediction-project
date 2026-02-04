@@ -2,5 +2,5 @@ __pycache__/
 *.pyc
 venv/
 .venv
-Models/*.pkl
+# Models/*.pkl
 notebooks/*.ipynb_checkpoints/
