@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Stroke Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8d7da;
+            color: #721c24;
+            text-align: center;
+            padding: 50px;
+        }
+        .error-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .home-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #721c24;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .home-link:hover {
+            background-color: #a94442;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>⚠️ Oops! An Error Occurred</h1>
+        <p class="error-message">{{ error }}</p>
+        <a class="home-link" href="{{ url_for('home') }}">⬅ Go Back</a>
+    </div>
+</body>
+</html>
