@@ -12,7 +12,6 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 def home():
     return render_template('home.html')
 
-
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
