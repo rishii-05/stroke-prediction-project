@@ -30,7 +30,7 @@ def predict():
             "smoking_status": {"Unknown": 0, "Formerly Smoked": 1, "Never Smoked": 2, "Smokes": 3},
         }
 
-        # ✅ EXACT TRAINING FEATURE ORDER
+        # EXACT TRAINING FEATURE ORDER
         input_data = [
             encode(request.form["gender"], category_map["gender"]),                 # gender
             float(request.form["age"]),                                             # age
@@ -53,9 +53,6 @@ def predict():
     except Exception as e:
         logging.error(f"❌ Unexpected error: {e}")
         return render_template("error.html", error=str(e))
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
