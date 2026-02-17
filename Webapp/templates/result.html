@@ -3,73 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stroke Prediction Result</title>
+    <title>Stroke Risk Assessment</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #eef2f7, #f9fbfd);
+            padding: 30px 10px;
             text-align: center;
-            padding: 50px;
         }
+
         .result-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            width: 50%;
-            min-width: 300px;
+            background: #ffffff;
+            max-width: 720px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
         }
+
         h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            color: #2c3e50;
         }
-        .alert {
-            padding: 15px;
-            border-radius: 5px;
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* ================= PROBABILITY BAR ================= */
+        .progress-bar {
+            width: 100%;
+            background: #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 32px;
+            line-height: 32px;
+            font-weight: bold;
+            color: white;
+            transition: width 0.7s ease-in-out;
+        }
+
+        .low {
+            background: linear-gradient(to right, #28a745, #5dd879);
+        }
+
+        .high {
+            background: linear-gradient(to right, #dc3545, #ff6b6b);
+        }
+
+        /* ================= RISK LEVEL CARD ================= */
+        .risk-card {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 18px;
             font-weight: bold;
         }
-        .danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+
+        .risk-low {
+            background-color: #eafaf1;
+            color: #1e7e34;
+            border-left: 6px solid #28a745;
         }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+
+        .risk-high {
+            background-color: #fdecea;
+            color: #a71d2a;
+            border-left: 6px solid #dc3545;
         }
-        .warning {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
+
+        /* ================= RISK SCALE ================= */
+        .risk-scale {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0 10px;
         }
-        .btn {
-            display: inline-block;
+
+        .scale-item {
+            flex: 1;
+            padding: 10px;
+            margin: 0 4px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .scale-low { background: #28a745; }
+        .scale-medium { background: #ffc107; color: #333; }
+        .scale-high { background: #dc3545; }
+
+        /* ================= REASONS ================= */
+        .reasons-box {
+            text-align: left;
             margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 10px;
         }
+
+        .reasons-box h3 {
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+
+        .reasons-box ul {
+            padding-left: 20px;
+        }
+
+        .reasons-box li {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+
+        /* ================= MEDICAL NOTE ================= */
+        .medical-note {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            background: #fff3cd;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 5px solid #ffc107;
+        }
+
+        /* ================= BUTTON ================= */
+        .btn {
+            margin-top: 25px;
+            padding: 12px 22px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            display: inline-block;
+        }
+
         .btn:hover {
-            background-color: #0056b3;
+            background: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .result-container {
+                padding: 20px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="result-container">
-        <h1>🩺 Stroke Prediction Result</h1>
-        {% if prediction == 1 %}
-            <p class="alert danger">🚨 High Risk: The model predicts a high chance of stroke. Please consult a doctor.</p>
-        {% elif prediction == 0 %}
-            <p class="alert success">✅ Low Risk: The model predicts a low chance of stroke. Keep maintaining a healthy lifestyle!</p>
-        {% else %}
-            <p class="alert warning">⚠️ Error: Unable to process prediction. Please try again.</p>
-        {% endif %}
-        <a href="{{ url_for('home') }}" class="btn">🔄 Try Again</a>
+
+<div class="result-container">
+    <h1>🧠 Stroke Risk Assessment</h1>
+    <p class="subtitle">AI-based preliminary health screening report</p>
+
+    <!-- Probability -->
+    <h3>📊 Risk Probability</h3>
+    <div class="progress-bar">
+        <div class="progress-fill {% if prediction == 1 %}high{% else %}low{% endif %}"
+             style="width: {{ probability }}%;">
+            {{ probability }}%
+        </div>
     </div>
+
+    <!-- Risk Level -->
+    {% if prediction == 1 %}
+        <div class="risk-card risk-high">
+            🚨 HIGH RISK OF STROKE
+        </div>
+    {% else %}
+        <div class="risk-card risk-low">
+            ✅ LOW RISK OF STROKE
+        </div>
+    {% endif %}
+
+    <!-- Risk Scale -->
+    <div class="risk-scale">
+        <div class="scale-item scale-low">Low (0–30%)</div>
+        <div class="scale-item scale-medium">Moderate (30–60%)</div>
+        <div class="scale-item scale-high">High (60–100%)</div>
+    </div>
+
+    <!-- Reasons -->
+    <div class="reasons-box">
+        <h3>🔍 Key Factors Affecting Risk</h3>
+        <ul>
+            {% for reason in reasons %}
+                <li>{{ reason }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Medical Note -->
+    <div class="medical-note">
+        ⚠️ This assessment is for educational and screening purposes only.
+        Please consult a certified medical professional for diagnosis.
+    </div>
+
+    <a href="{{ url_for('home') }}" class="btn">🔄 New Assessment</a>
+</div>
+
 </body>
 </html>
