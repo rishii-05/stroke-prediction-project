@@ -3,157 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stroke Risk Assessment</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Stroke Risk Assessment Results</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #eef2f7, #f9fbfd);
-            padding: 30px 10px;
-            text-align: center;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .result-container {
             background: #ffffff;
-            max-width: 720px;
-            margin: auto;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        h1 {
-            margin-bottom: 10px;
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
             color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
         }
 
         .subtitle {
             color: #6c757d;
-            font-size: 15px;
-            margin-bottom: 25px;
+            font-size: 1rem;
         }
 
-        /* ================= PROBABILITY BAR ================= */
-        .progress-bar {
-            width: 100%;
-            background: #e9ecef;
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 15px 0;
+        /* Risk Level Card */
+        .risk-level-card {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 25px 0;
+            animation: slideIn 0.5s ease-out;
         }
 
-        .progress-fill {
-            height: 32px;
-            line-height: 32px;
-            font-weight: bold;
-            color: white;
-            transition: width 0.7s ease-in-out;
-        }
-
-        .low {
-            background: linear-gradient(to right, #28a745, #5dd879);
-        }
-
-        .high {
-            background: linear-gradient(to right, #dc3545, #ff6b6b);
-        }
-
-        /* ================= RISK LEVEL CARD ================= */
-        .risk-card {
-            margin-top: 20px;
-            padding: 18px;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .risk-low {
-            background-color: #eafaf1;
-            color: #1e7e34;
-            border-left: 6px solid #28a745;
+        @keyframes slideIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .risk-high {
-            background-color: #fdecea;
-            color: #a71d2a;
-            border-left: 6px solid #dc3545;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(238, 90, 111, 0.4);
         }
 
-        /* ================= RISK SCALE ================= */
+        .risk-moderate {
+            background: linear-gradient(135deg, #ffd43b 0%, #ffa94d 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 169, 77, 0.4);
+        }
+
+        .risk-low {
+            background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(55, 178, 77, 0.4);
+        }
+
+        .risk-level-card h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .risk-level-card .probability-text {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            margin: 30px 0;
+        }
+
+        .progress-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 40px;
+            background: #e9ecef;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            transition: width 1.5s ease-out;
+            position: relative;
+        }
+
+        .progress-high {
+            background: linear-gradient(90deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+
+        .progress-low {
+            background: linear-gradient(90deg, #51cf66 0%, #37b24d 100%);
+        }
+
+        /* Risk Scale */
         .risk-scale {
             display: flex;
-            justify-content: space-between;
-            margin: 25px 0 10px;
+            gap: 10px;
+            margin: 25px 0;
         }
 
         .scale-item {
             flex: 1;
-            padding: 10px;
-            margin: 0 4px;
-            border-radius: 8px;
-            font-size: 14px;
-            color: white;
-        }
-
-        .scale-low { background: #28a745; }
-        .scale-medium { background: #ffc107; color: #333; }
-        .scale-high { background: #dc3545; }
-
-        /* ================= REASONS ================= */
-        .reasons-box {
-            text-align: left;
-            margin-top: 20px;
-            background: #f8f9fa;
-            padding: 18px;
+            padding: 15px;
             border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
-        .reasons-box h3 {
-            margin-bottom: 10px;
-            color: #343a40;
-        }
-
-        .reasons-box ul {
-            padding-left: 20px;
-        }
-
-        .reasons-box li {
-            margin: 8px 0;
-            font-size: 15px;
-        }
-
-        /* ================= MEDICAL NOTE ================= */
-        .medical-note {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #555;
-            background: #fff3cd;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 5px solid #ffc107;
-        }
-
-        /* ================= BUTTON ================= */
-        .btn {
-            margin-top: 25px;
-            padding: 12px 22px;
-            background: #007bff;
+        .scale-low { 
+            background: #51cf66; 
             color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 16px;
-            display: inline-block;
+        }
+        
+        .scale-medium { 
+            background: #ffd43b; 
+            color: #333;
+        }
+        
+        .scale-high { 
+            background: #ff6b6b; 
+            color: white;
         }
 
-        .btn:hover {
-            background: #0056b3;
+        /* Risk Factors */
+        .risk-factors {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+
+        .risk-factors h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .risk-factors ul {
+            list-style: none;
+        }
+
+        .risk-factors li {
+            padding: 12px 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            font-size: 1rem;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .risk-factors li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Medical Note */
+        .medical-note {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .medical-note h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .medical-note p {
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        /* Recommendations */
+        .recommendations {
+            background: #e7f5ff;
+            border-left: 5px solid #339af0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .recommendations h4 {
+            color: #1864ab;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .recommendations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recommendations li {
+            color: #1864ab;
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .recommendations li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
         }
 
         @media (max-width: 768px) {
             .result-container {
-                padding: 20px;
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .risk-level-card .probability-text {
+                font-size: 2.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .risk-scale {
+                flex-direction: column;
             }
         }
     </style>
@@ -162,39 +326,35 @@
 <body>
 
 <div class="result-container">
-    <h1>🧠 Stroke Risk Assessment</h1>
-    <p class="subtitle">AI-based preliminary health screening report</p>
-
-    <!-- Probability -->
-    <h3>📊 Risk Probability</h3>
-    <div class="progress-bar">
-        <div class="progress-fill {% if prediction == 1 %}high{% else %}low{% endif %}"
-             style="width: {{ probability }}%;">
-            {{ probability }}%
-        </div>
+    <div class="header">
+        <h1>Brain Stroke Risk Assessment Results</h1>
+        <p class="subtitle">AI-powered analysis based on clinical data</p>
     </div>
 
-    <!-- Risk Level -->
-    {% if prediction == 1 %}
-        <div class="risk-card risk-high">
-            🚨 HIGH RISK OF STROKE
+    <!-- Risk Level Card -->
+    {% if probability >= 60 %}
+        <div class="risk-level-card risk-high">
+            <h2>🚨 HIGH RISK DETECTED</h2>
+            <div class="probability-text">{{ probability }}%</div>
+            <p>Elevated stroke risk identified - Medical consultation recommended</p>
+        </div>
+    {% elif probability >= 30 %}
+        <div class="risk-level-card risk-moderate">
+            <h2>⚠️ MODERATE RISK DETECTED</h2>
+            <div class="probability-text">{{ probability }}%</div>
+            <p>Moderate stroke risk - Regular monitoring and lifestyle changes advised</p>
         </div>
     {% else %}
-        <div class="risk-card risk-low">
-            ✅ LOW RISK OF STROKE
+        <div class="risk-level-card risk-low">
+            <h2>✅ LOW RISK DETECTED</h2>
+            <div class="probability-text">{{ probability }}%</div>
+            <p>Current risk factors indicate lower stroke probability</p>
         </div>
     {% endif %}
 
-    <!-- Risk Scale -->
-    <div class="risk-scale">
-        <div class="scale-item scale-low">Low (0–30%)</div>
-        <div class="scale-item scale-medium">Moderate (30–60%)</div>
-        <div class="scale-item scale-high">High (60–100%)</div>
-    </div>
-
-    <!-- Reasons -->
-    <div class="reasons-box">
-        <h3>🔍 Key Factors Affecting Risk</h3>
+    <!-- Risk Factors -->
+    <div class="risk-factors">
+        <h3>🔍 Detailed Risk Factor Analysis</h3>
         <ul>
             {% for reason in reasons %}
                 <li>{{ reason }}</li>
@@ -202,14 +362,34 @@
         </ul>
     </div>
 
-    <!-- Medical Note -->
-    <div class="medical-note">
-        ⚠️ This assessment is for educational and screening purposes only.
-        Please consult a certified medical professional for diagnosis.
+    <!-- Recommendations -->
+    <div class="recommendations">
+        <h4>💡 Personalized Recommendations</h4>
+        <ul>
+            {% for recommendation in recommendations %}
+                <li>{{ recommendation }}</li>
+            {% endfor %}
+        </ul>
     </div>
 
-    <a href="{{ url_for('home') }}" class="btn">🔄 New Assessment</a>
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a href="{{ url_for('home') }}" class="btn btn-primary">🔄 New Assessment</a>
+        <button onclick="window.print()" class="btn btn-secondary">🖨️ Print Results</button>
+    </div>
 </div>
+
+<script>
+    // Animate progress bar on load
+    window.addEventListener('load', function() {
+        const progressBar = document.querySelector('.progress-bar-fill');
+        const width = progressBar.style.width;
+        progressBar.style.width = '0%';
+        setTimeout(() => {
+            progressBar.style.width = width;
+        }, 100);
+    });
+</script>
 
 </body>
 </html>

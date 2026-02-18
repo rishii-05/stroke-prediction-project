@@ -2,100 +2,217 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Stroke Risk Assessment</title>
+    <title>AI Stroke Risk Assessment</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 <div class="app-container">
 
     <header class="app-header">
-        <h1>🧠 AI Stroke Risk Assessment</h1>
-        <p>Preliminary clinical screening tool</p>
+        <h1>AI Brain Stroke Risk Assessment</h1>
+        <p>Advanced machine learning-powered preliminary clinical screening</p>
     </header>
 
-    <form class="medical-form" action="/predict" method="post">
+    <form class="medical-form" action="/predict" method="post" id="strokeForm">
 
         <div class="form-section">
-            <h3>👤 Personal Details</h3>
+            <h3>👤 Personal Information</h3>
 
-            <label>Gender</label>
-            <select name="gender" required>
-                <option value="0">Female</option>
-                <option value="1">Male</option>
-            </select>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select name="gender" id="gender" required>
+                    <option value="">Select gender</option>
+                    <option value="0">Female</option>
+                    <option value="1">Male</option>
+                </select>
+            </div>
 
-            <label>Age (0–100)</label>
-            <input type="number" name="age" min="0" max="100" required>
+            <div class="form-group">
+                <label for="age">Age (years)</label>
+                <input type="number" name="age" id="age" min="1" max="120" placeholder="Enter age (1-120)" required>
+                <small style="color: #6c757d;">Risk increases significantly after age 55</small>
+            </div>
+
+            <div class="form-group">
+                <label for="ever_married">Marital Status</label>
+                <select name="ever_married" id="ever_married" required>
+                    <option value="">Select status</option>
+                    <option value="0">Never Married</option>
+                    <option value="1">Married/Previously Married</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-section">
             <h3>❤️ Medical History</h3>
 
-            <label>Hypertension</label>
-            <select name="hypertension" required>
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
+            <div class="form-group">
+                <label for="hypertension">Hypertension (High Blood Pressure)</label>
+                <select name="hypertension" id="hypertension" required>
+                    <option value="">Select option</option>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
 
-            <label>Heart Disease</label>
-            <select name="heart_disease" required>
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
-
-            <label>Ever Married</label>
-            <select name="ever_married" required>
-                <option value="0">No</option>
-                <option value="1">Yes</option>
-            </select>
+            <div class="form-group">
+                <label for="heart_disease">Heart Disease</label>
+                <select name="heart_disease" id="heart_disease" required>
+                    <option value="">Select option</option>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-section">
-            <h3>🏢 Lifestyle</h3>
+            <h3>🏢 Lifestyle Factors</h3>
 
-            <label>Work Type</label>
-            <select name="work_type" required>
-                <option value="0">Government Job</option>
-                <option value="1">Private</option>
-                <option value="2">Self-employed</option>
-                <option value="3">Children</option>
-            </select>
+            <div class="form-group">
+                <label for="work_type">Work Type</label>
+                <select name="work_type" id="work_type" required>
+                    <option value="">Select work type</option>
+                    <option value="0">Government Job</option>
+                    <option value="1">Private Sector</option>
+                    <option value="2">Self-employed</option>
+                    <option value="3">Children/Never Worked</option>
+                </select>
+            </div>
 
-            <label>Residence Type</label>
-            <select name="Residence_type" required>
-                <option value="0">Rural</option>
-                <option value="1">Urban</option>
-            </select>
+            <div class="form-group">
+                <label for="Residence_type">Residence Type</label>
+                <select name="Residence_type" id="Residence_type" required>
+                    <option value="">Select residence</option>
+                    <option value="0">Rural</option>
+                    <option value="1">Urban</option>
+                </select>
+            </div>
 
-            <label>Smoking Status</label>
-            <select name="smoking_status" required>
-                <option value="0">Unknown</option>
-                <option value="1">Formerly Smoked</option>
-                <option value="2">Never Smoked</option>
-                <option value="3">Smokes</option>
-            </select>
+            <div class="form-group">
+                <label for="smoking_status">Smoking Status</label>
+                <select name="smoking_status" id="smoking_status" required>
+                    <option value="">Select smoking status</option>
+                    <option value="2">Never Smoked</option>
+                    <option value="1">Formerly Smoked</option>
+                    <option value="3">Currently Smokes</option>
+                    <option value="0">Unknown</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-section">
             <h3>🧪 Clinical Measurements</h3>
 
-            <label>Average Glucose Level (mg/dL)</label>
-            <input type="number" step="any" name="avg_glucose_level" min="50" max="300" required>
+            <div class="form-group">
+                <label for="avg_glucose_level">Average Glucose Level (mg/dL)</label>
+                <input type="number" step="0.01" name="avg_glucose_level" id="avg_glucose_level" 
+                       min="50" max="300" placeholder="Enter glucose level (50-300)" required>
+                <small style="color: #6c757d;">Normal: 70-100 mg/dL (fasting)</small>
+            </div>
 
-            <label>BMI (10–60)</label>
-            <input type="number" step="any" name="bmi" min="10" max="60" required>
+            <div class="form-group">
+                <label for="bmi">Body Mass Index (BMI) <span style="color: #888;">(Optional)</span></label>
+                <input type="number" step="0.1" name="bmi" id="bmi" 
+                       min="10" max="60" placeholder="Enter BMI or leave blank if unknown">
+                <small style="color: #6c757d;">Normal: 18.5-24.9 | Overweight: 25-29.9 | Obese: 30+ | Leave blank if unknown</small>
+            </div>
         </div>
 
-        <button type="submit" class="submit-btn">🔍 Assess Risk</button>
-
-        <p class="disclaimer">
-            ⚠️ This is an educational screening tool, not a diagnostic system.
-        </p>
+        <button type="submit" class="submit-btn">🔍 Analyze Stroke Risk</button>
 
     </form>
 
 </div>
+
+<script>
+    // Real-time form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('strokeForm');
+        const ageInput = document.getElementById('age');
+        const glucoseInput = document.getElementById('avg_glucose_level');
+        const bmiInput = document.getElementById('bmi');
+
+        // Validate age
+        ageInput.addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (value >= 1 && value <= 120) {
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            } else if (this.value !== '') {
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            }
+        });
+
+        // Validate glucose
+        glucoseInput.addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (value >= 50 && value <= 300) {
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            } else if (this.value !== '') {
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            }
+        });
+
+        // Validate BMI (optional field)
+        bmiInput.addEventListener('input', function() {
+            if (this.value === '') {
+                // Empty is valid (optional field)
+                this.classList.remove('valid', 'invalid');
+            } else {
+                const value = parseFloat(this.value);
+                if (value >= 10 && value <= 60) {
+                    this.classList.add('valid');
+                    this.classList.remove('invalid');
+                } else {
+                    this.classList.add('invalid');
+                    this.classList.remove('valid');
+                }
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            const age = parseFloat(ageInput.value);
+            const glucose = parseFloat(glucoseInput.value);
+            const bmi = parseFloat(bmiInput.value);
+
+            if (age < 1 || age > 120) {
+                e.preventDefault();
+                alert('⚠️ Please enter a valid age between 1 and 120 years.');
+                ageInput.focus();
+                return false;
+            }
+
+            if (glucose < 50 || glucose > 300) {
+                e.preventDefault();
+                alert('⚠️ Please enter a valid glucose level between 50 and 300 mg/dL.');
+                glucoseInput.focus();
+                return false;
+            }
+
+            // BMI is optional, only validate if provided
+            if (bmiInput.value !== '' && (bmi < 10 || bmi > 60)) {
+                e.preventDefault();
+                alert('⚠️ Please enter a valid BMI between 10 and 60, or leave it blank.');
+                bmiInput.focus();
+                return false;
+            }
+
+            // Show loading state
+            const submitBtn = form.querySelector('.submit-btn');
+            submitBtn.innerHTML = '<span class="loading"></span> Analyzing...';
+            submitBtn.disabled = true;
+        });
+    });
+</script>
+
 </body>
 </html>

@@ -30,6 +30,15 @@ def predict():
             "smoking_status": {"Unknown": 0, "Formerly Smoked": 1, "Never Smoked": 2, "Smokes": 3},
         }
 
+        # Handle BMI - use mean if not provided
+        bmi_value = request.form.get("bmi", "").strip()
+        if bmi_value == "" or bmi_value is None:
+            # Use the mean BMI from training data (28.893237)
+            bmi_value = 28.89
+            logging.info(f"⚠️ BMI not provided, using mean value: {bmi_value}")
+        else:
+            bmi_value = float(bmi_value)
+
         # EXACT TRAINING FEATURE ORDER
         input_data = [
             encode(request.form["gender"], category_map["gender"]),                 # gender
@@ -40,15 +49,19 @@ def predict():
             encode(request.form["work_type"], category_map["work_type"]),           # work_type
             encode(request.form["Residence_type"], category_map["Residence_type"]), # Residence_type
             float(request.form["avg_glucose_level"]),                               # avg_glucose_level
-            float(request.form["bmi"]),                                             # bmi
+            bmi_value,                                                              # bmi (with default handling)
             encode(request.form["smoking_status"], category_map["smoking_status"])  # smoking_status
         ]
 
         logging.info(f"✅ Final User Input (Correct & Safe): {input_data}")
 
-        prediction = predict_stroke(input_data)
+        result = predict_stroke(input_data)
 
-        return render_template("result.html", prediction=prediction)
+        return render_template("result.html", 
+                             prediction=result['prediction'],
+                             probability=result['probability'],
+                             reasons=result['reasons'],
+                             recommendations=result['recommendations'])
 
     except Exception as e:
         logging.error(f"❌ Unexpected error: {e}")
