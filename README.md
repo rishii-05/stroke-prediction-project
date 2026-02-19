@@ -39,9 +39,9 @@ python app.py
 ### 3. Access the App
 Open your browser and go to: **http://127.0.0.1:5000**
 
-## 📊 Improving Model Performance
+## 📊 Model Training
 
-The current model has good accuracy (90%) but low precision (12%) and recall (16%). Use the model training notebook:
+The system uses a hybrid ML + rule-based approach. To train or retrain the model:
 
 ```bash
 # Open Jupyter Notebook
@@ -49,27 +49,23 @@ jupyter notebook
 
 # Navigate to: Notebooks/model_training.ipynb
 # Run all cells to:
-# - Train baseline models for comparison
-# - Apply SMOTE for class imbalance
-# - Perform hyperparameter tuning
+# - Train 6 baseline models for comparison
+# - Apply hyperparameter tuning to Random Forest
 # - Find optimal prediction threshold
+# - Compare baseline vs improved performance
 # - Save improved model automatically
 ```
 
-**Expected improvements:**
-- Precision: 12% → 60-70% (5x better)
-- Recall: 16% → 70-80% (4-5x better)
-- Better suited for medical screening
+**Note:** SMOTE (class balancing) is already applied in `data_preprocessing.ipynb`
 
 **After training, the notebook will save:**
-- `Models/stroke_model_improved.pkl`
-- `Models/scaler_improved.pkl`
-- `Models/model_performance_improved.csv`
+- `Models/stroke_model_improved.pkl` - Optimized model
+- `Models/model_performance_improved.csv` - Performance metrics
+- `Models/model_comparison.csv` - Baseline vs Improved comparison
 
-**To use the improved model:**
+**To deploy the improved model:**
 ```bash
 copy Models\stroke_model_improved.pkl Models\stroke_model.pkl
-copy Models\scaler_improved.pkl Models\scaler.pkl
 # Restart the web app
 ```
 
@@ -101,9 +97,13 @@ stroke-prediction-project/
 │   ├── feature_engineered_data.csv
 │   └── preprocessed data files
 ├── Models/
-│   ├── stroke_model.pkl          # Trained model
-│   ├── scaler.pkl                 # Feature scaler
-│   └── model_performance.csv      # Performance metrics
+│   ├── stroke_model.pkl               # Active trained model
+│   ├── scaler.pkl                     # Feature scaler
+│   ├── model_comparison.csv           # Baseline vs Improved comparison
+│   ├── model_performance_improved.csv # Current model metrics
+│   ├── lime_explanation.html          # LIME explainability report
+│   ├── shap_summary_plot.png          # SHAP feature importance
+│   └── shap_beeswarm_plot.png         # SHAP detailed analysis
 ├── Notebooks/
 │   ├── data_preprocessing.ipynb         # Data cleaning
 │   ├── feature_engineering.ipynb        # Feature creation
@@ -125,11 +125,19 @@ stroke-prediction-project/
 
 ## 🔧 Technical Details
 
-### Input Features
-1. **Demographics**: Gender, Age, Marital Status
-2. **Medical History**: Hypertension, Heart Disease
-3. **Lifestyle**: Work Type, Residence, Smoking Status
-4. **Clinical**: Average Glucose Level, BMI
+### Input Features (in order of importance)
+1. **Age** (42.6% importance) - Strongest predictor
+2. **Average Glucose Level** (18.7% importance) - Diabetes indicator
+3. **BMI** (14.9% importance) - Obesity factor
+4. **Work Type** (7.5% importance)
+5. **Smoking Status** (5.3% importance)
+6. **Residence Type** (3.0% importance)
+7. **Gender** (2.6% importance)
+8. **Marital Status** (2.4% importance)
+9. **Hypertension** (1.6% importance) - Correlated with age
+10. **Heart Disease** (1.4% importance) - Correlated with age
+
+**Note:** Hypertension and heart disease show low ML importance because they're highly correlated with age. However, they remain medically critical and are weighted heavily in the manual risk score.
 
 ### Risk Calculation
 The system uses a **hybrid approach**:
@@ -138,14 +146,19 @@ The system uses a **hybrid approach**:
 3. If manual score > ML score, averages them
 4. Prevents underestimation of high-risk patients
 
-### Risk Scoring Weights
-- Age 60+: +0.25
-- Hypertension: +0.25
-- Heart Disease: +0.30
-- Diabetes (glucose ≥126): +0.15
-- Obesity (BMI ≥30): +0.10
-- Current Smoker: +0.20
-- Multiple risk factors: +0.05-0.10 bonus
+### Risk Scoring Weights (Manual Risk Score)
+Based on medical guidelines, used as safety check when ML underestimates:
+- **Age 75+**: +0.35
+- **Age 65-74**: +0.25
+- **Age 55-64**: +0.15
+- **Heart Disease**: +0.30 (highest medical risk)
+- **Hypertension**: +0.25
+- **Diabetes (glucose ≥126)**: +0.15
+- **Current Smoker**: +0.20
+- **Obesity (BMI ≥35)**: +0.15
+- **Overweight (BMI ≥30)**: +0.10
+- **Multiple risk factors (3+)**: +0.10 compound bonus
+- **Multiple risk factors (2)**: +0.05 compound bonus
 
 ## 🎨 UI Features
 
@@ -159,17 +172,22 @@ The system uses a **hybrid approach**:
 
 ## 📈 Model Performance
 
-### Current Model
-- Accuracy: 90.2%
-- Precision: 12.1% (poor)
-- Recall: 16.0% (poor)
-- Issue: Biased toward "No Stroke" due to class imbalance
+### Current Improved Model
+- **Accuracy**: 85.4%
+- **Precision**: 16.3%
+- **Recall**: 48.0% (200% improvement over baseline!)
+- **F1 Score**: 24.4% (76.6% improvement)
+- **AUC-ROC**: 0.79 (good discrimination)
 
-### After Running improve_model.py
-- Accuracy: 85-88%
-- Precision: 60-70% (5x improvement)
-- Recall: 70-80% (4-5x improvement)
-- Better balanced for medical screening
+### Baseline Model (for comparison)
+- **Accuracy**: 90.2%
+- **Precision**: 12.1%
+- **Recall**: 16.0%
+- **F1 Score**: 13.8%
+
+**Key Improvement:** The improved model catches 48% of stroke cases vs only 16% for baseline - critical for medical screening where missing cases is dangerous.
+
+**Why lower accuracy?** The improved model is more conservative (predicts more strokes) to avoid missing real cases. This is medically appropriate - false positives are safer than false negatives in stroke screening.
 
 ## 🚀 Deployment
 
@@ -215,8 +233,10 @@ app.run(debug=True, port=5001)
 
 **Low model performance?**
 ```bash
-# Run the improvement script:
-python improve_model.py
+# Retrain the model:
+# Open Notebooks/model_training.ipynb in Jupyter
+# Run all cells to train improved model
+# Follow instructions at end to deploy
 ```
 
 ## 📚 Research Paper
@@ -232,10 +252,15 @@ Published in IEEE Access, 2023
 
 To improve the model:
 1. Open `Notebooks/model_training.ipynb`
-2. Run all cells to train with your data
-3. Compare baseline vs improved results in the notebook
-4. Replace model files if performance improves
-5. Document changes in model_performance.csv
+2. Run all cells to train with current data
+3. Review baseline vs improved comparison in the notebook output
+4. If performance improves, follow deployment instructions in notebook
+5. Document changes in `Models/model_comparison.csv`
+
+To modify preprocessing:
+1. Edit `Notebooks/data_preprocessing.ipynb` (applies SMOTE)
+2. Edit `Notebooks/feature_engineering.ipynb` (creates new features)
+3. Retrain model using `model_training.ipynb`
 
 ## ⚠️ Important Notice
 
@@ -253,26 +278,29 @@ Based on research by Krishna Mridha, Jungpil Shin, Sandesh Ghimire, Anmol Aran, 
 
 ## 📖 Detailed Guides
 
-### Model Improvement Guide
+### Model Training Guide
 
-The `improve_model.py` script:
-1. Loads preprocessed training data
-2. Applies SMOTE for class imbalance
-3. Performs GridSearch for hyperparameter tuning
-4. Finds optimal prediction threshold
-5. Saves improved model and metrics
+The `Notebooks/model_training.ipynb` notebook:
+1. Loads preprocessed data (already SMOTE-balanced from preprocessing)
+2. Trains 6 baseline models (RF, XGBoost, LogReg, SVM, KNN, NaiveBayes)
+3. Performs GridSearch hyperparameter tuning on best model (Random Forest)
+4. Finds optimal prediction threshold using precision-recall curve
+5. Compares baseline vs improved performance
+6. Saves improved model and comprehensive metrics
 
 **What it optimizes:**
-- Number of trees (n_estimators)
-- Tree depth (max_depth)
-- Split criteria (min_samples_split, min_samples_leaf)
-- Class weights (balanced vs unbalanced)
+- Number of trees (n_estimators): 100 or 200
+- Tree depth (max_depth): 15, 20, or unlimited
+- Split criteria (min_samples_split): 2 or 5
+- Leaf size (min_samples_leaf): 1 or 2
+- Class weights: balanced or unbalanced
 
 **Evaluation metrics:**
 - F1 Score (primary metric for imbalanced data)
-- Precision (fewer false positives)
-- Recall (fewer missed cases)
+- Precision (fewer false alarms)
+- Recall (fewer missed stroke cases - most critical!)
 - AUC-ROC (overall discrimination ability)
+- Confusion matrix (detailed error analysis)
 
 ### Deployment Guide
 
