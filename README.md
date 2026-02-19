@@ -107,7 +107,7 @@ stroke-prediction-project/
 ├── Notebooks/
 │   ├── data_preprocessing.ipynb         # Data cleaning
 │   ├── feature_engineering.ipynb        # Feature creation
-│   ├── model_training.ipynb             # ⭐ Complete training pipeline
+│   ├── model_training.ipynb             # Complete training pipeline
 │   └── explainability.ipynb             # SHAP/LIME analysis
 ├── Webapp/
 │   ├── templates/
