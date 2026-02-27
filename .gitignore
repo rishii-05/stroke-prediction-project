@@ -1,6 +1,16 @@
+# Virtual Environment
+venv/
+.venv/
+
+# Python Cache
 __pycache__/
 *.pyc
-venv/
-.venv
-# Models/*.pkl
-notebooks/*.ipynb_checkpoints/
+
+# Database (contains user data - don't push to GitHub!)
+Webapp/stroke_app.db
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# IDE
+.vscode/

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile - {{ user.full_name }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div class="app-container">
+
+    <!-- Main Title -->
+    <div class="main-title">
+        <h1>AI Brain Stroke Risk Assessment System</h1>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/profile" class="active">Profile</a>
+            <a href="/history">History</a>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+
+    <header class="app-header">
+        <h1>👤 User Profile</h1>
+        <p>Manage your account settings</p>
+    </header>
+
+    <div class="profile-container">
+        
+        <!-- User Info Card -->
+        <div class="card">
+            <h3>📋 Account Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Full Name:</span>
+                    <span class="info-value">{{ user.full_name }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Username:</span>
+                    <span class="info-value">{{ user.username }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ user.email }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Member Since:</span>
+                    <span class="info-value">{{ user.created_at[:10] }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="card">
+            <h3>📈 Your Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number">{{ stats.total_predictions }}</div>
+                    <div class="stat-label">Total Assessments</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ "%.1f"|format(stats.avg_risk or 0) }}%</div>
+                    <div class="stat-label">Average Risk</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ "%.1f"|format(stats.max_risk or 0) }}%</div>
+                    <div class="stat-label">Highest Risk</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

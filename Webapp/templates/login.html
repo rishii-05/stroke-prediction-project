@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Stroke Risk Assessment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div class="app-container">
+
+    <header class="app-header">
+        <h1>🔐 Login</h1>
+        <p>Access your stroke risk assessment dashboard</p>
+    </header>
+
+    {% if error %}
+    <div class="alert alert-error">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
+    <form class="medical-form" action="/login" method="post" style="max-width: 500px; margin: 0 auto;">
+
+        <div class="form-section">
+            <h3>Account Login</h3>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" placeholder="Enter your username" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Enter your password" required>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">🔓 Login</button>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <p style="color: #6c757d;">Don't have an account? <a href="/register" style="color: #7c3aed; text-decoration: none; font-weight: 600;">Register here</a></p>
+        </div>
+
+    </form>
+
+</div>
+</body>
+</html>

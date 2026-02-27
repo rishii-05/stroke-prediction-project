@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Stroke Risk Assessment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div class="app-container">
+
+    <!-- Main Title -->
+    <div class="main-title">
+        <h1>AI Brain Stroke Risk Assessment System</h1>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="/dashboard" class="active">Dashboard</a>
+            <a href="/profile">Profile</a>
+            <a href="/history">History</a>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+
+    <header class="app-header">
+        <h2>Welcome, {{ user.full_name }}!</h2>
+        <p>Advanced machine learning-powered preliminary clinical screening</p>
+    </header>
+
+    <form class="medical-form" action="/predict" method="post" id="strokeForm">
+
+        <div class="form-section">
+            <h3>👤 Personal Information</h3>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select name="gender" id="gender" required>
+                    <option value="">Select gender</option>
+                    <option value="0">Female</option>
+                    <option value="1">Male</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age (years)</label>
+                <input type="number" name="age" id="age" min="1" max="120" placeholder="Enter age (1-120)" required>
+                <small style="color: #6c757d;">Risk increases significantly after age 55</small>
+            </div>
+
+            <div class="form-group">
+                <label for="ever_married">Marital Status</label>
+                <select name="ever_married" id="ever_married" required>
+                    <option value="">Select status</option>
+                    <option value="0">Never Married</option>
+                    <option value="1">Married/Previously Married</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>❤️ Medical History</h3>
+
+            <div class="form-group">
+                <label for="hypertension">Hypertension (High Blood Pressure)</label>
+                <select name="hypertension" id="hypertension" required>
+                    <option value="">Select option</option>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="heart_disease">Heart Disease</label>
+                <select name="heart_disease" id="heart_disease" required>
+                    <option value="">Select option</option>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>🏢 Lifestyle Factors</h3>
+
+            <div class="form-group">
+                <label for="work_type">Work Type</label>
+                <select name="work_type" id="work_type" required>
+                    <option value="">Select work type</option>
+                    <option value="0">Government Job</option>
+                    <option value="1">Private Sector</option>
+                    <option value="2">Self-employed</option>
+                    <option value="3">Children/Never Worked</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Residence_type">Residence Type</label>
+                <select name="Residence_type" id="Residence_type" required>
+                    <option value="">Select residence</option>
+                    <option value="0">Rural</option>
+                    <option value="1">Urban</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="smoking_status">Smoking Status</label>
+                <select name="smoking_status" id="smoking_status" required>
+                    <option value="">Select smoking status</option>
+                    <option value="2">Never Smoked</option>
+                    <option value="1">Formerly Smoked</option>
+                    <option value="3">Currently Smokes</option>
+                    <option value="0">Unknown</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>🧪 Clinical Measurements</h3>
+
+            <div class="form-group">
+                <label for="avg_glucose_level">Average Glucose Level (mg/dL)</label>
+                <input type="number" step="0.01" name="avg_glucose_level" id="avg_glucose_level" 
+                       min="50" max="300" placeholder="Enter glucose level (50-300)" required>
+                <small style="color: #6c757d;">Normal: 70-100 mg/dL (fasting)</small>
+            </div>
+
+            <div class="form-group">
+                <label for="bmi">Body Mass Index (BMI) <span style="color: #888;">(Optional)</span></label>
+                <input type="number" step="0.1" name="bmi" id="bmi" 
+                       min="10" max="60" placeholder="Enter BMI or leave blank if unknown">
+                <small style="color: #6c757d;">Normal: 18.5-24.9 | Overweight: 25-29.9 | Obese: 30+ | Leave blank if unknown</small>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Analyze Stroke Risk</button>
+
+    </form>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

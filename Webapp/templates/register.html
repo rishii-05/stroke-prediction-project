@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Stroke Risk Assessment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div class="app-container">
+
+    <header class="app-header">
+        <h1>📝 Create Account</h1>
+        <p>Join to track your stroke risk assessments</p>
+    </header>
+
+    {% if error %}
+    <div class="alert alert-error">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
+    <form class="medical-form" action="/register" method="post" style="max-width: 500px; margin: 0 auto;">
+
+        <div class="form-section">
+            <h3>Account Information</h3>
+
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" name="full_name" id="full_name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" name="email" id="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" placeholder="Choose a username" required minlength="3">
+                <small style="color: #6c757d;">At least 3 characters</small>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Choose a strong password" required minlength="6">
+                <small style="color: #6c757d;">At least 6 characters</small>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="Re-enter your password" required>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">✅ Create Account</button>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <p style="color: #6c757d;">Already have an account? <a href="/login" style="color: #7c3aed; text-decoration: none; font-weight: 600;">Login here</a></p>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm_password').value;
+        
+        if (password !== confirm) {
+            e.preventDefault();
+            alert('⚠️ Passwords do not match!');
+            return false;
+        }
+    });
+</script>
+
+</body>
+</html>
