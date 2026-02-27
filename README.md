@@ -215,11 +215,11 @@ To retrain the model with new data:
    
    Backup current model:
    ```bash
-   copy ../Models/stroke_model.pkl ../Models/stroke_model_backup.pkl
+   copy Models/stroke_model.pkl Models/stroke_model_backup.pkl
    ```
    Replace with improved model:
    ```bash
-   copy ../Models/stroke_model_improved.pkl ../Models/stroke_model.pkl
+   copy Models/stroke_model_improved.pkl Models/stroke_model.pkl
    ```
    
 5. Restart the web application
