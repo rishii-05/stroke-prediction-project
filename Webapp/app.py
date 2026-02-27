@@ -54,7 +54,7 @@ def register():
         success, result = create_user(username, email, password, full_name)
         
         if success:
-            logging.info(f"✅ New user registered: {username}")
+            logging.info(f"New user registered: {username}")
             return redirect(url_for('login'))
         else:
             return render_template('register.html', error=result)
@@ -73,7 +73,7 @@ def login():
         if success:
             session['user_id'] = user['id']
             session['username'] = user['username']
-            logging.info(f"✅ User logged in: {username}")
+            logging.info(f"User logged in: {username}")
             return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', error='Invalid username or password')
@@ -85,7 +85,7 @@ def logout():
     """User logout"""
     username = session.get('username', 'Unknown')
     session.clear()
-    logging.info(f"✅ User logged out: {username}")
+    logging.info(f"User logged out: {username}")
     return redirect(url_for('login'))
 
 @app.route('/dashboard')
@@ -153,7 +153,7 @@ def predict():
             encode(request.form["smoking_status"], category_map["smoking_status"])  # smoking_status
         ]
 
-        logging.info(f"✅ Final User Input (Correct & Safe): {input_data}")
+        logging.info(f"Final User Input (Correct & Safe): {input_data}")
 
         result = predict_stroke(input_data)
         
@@ -175,7 +175,7 @@ def predict():
                              user=user)
 
     except Exception as e:
-        logging.error(f"❌ Unexpected error: {e}")
+        logging.error(f"Unexpected error: {e}")
         return render_template("error.html", error=str(e))
 
 if __name__ == '__main__':

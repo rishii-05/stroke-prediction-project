@@ -11,18 +11,18 @@ An intelligent web application for stroke risk prediction using machine learning
 - **Personalized Recommendations**: Tailored health advice based on your risk profile
 
 ### User Management
-- 🔐 Secure user registration and login
-- 👤 Personal profile with statistics
-- 📊 Complete prediction history tracking
-- 💾 Automatic assessment saving
-- 🔒 Password hashing and session management
+- Secure user registration and login
+- Personal profile with statistics
+- Complete prediction history tracking
+- Automatic assessment saving
+- Password hashing and session management
 
 ### User Interface
-- 🎨 Modern, clean design
-- 📱 Mobile responsive
-- ✅ Real-time form validation
-- 🎯 Color-coded risk levels (Green/Yellow/Red)
-- 🧭 Easy navigation
+- Modern, clean design
+- Mobile responsive
+- Real-time form validation
+- Color-coded risk levels (Green/Yellow/Red)
+- Easy navigation
 
 ## 🚀 Quick Start
 
@@ -85,10 +85,15 @@ stroke-prediction-project/
 │   ├── feature_engineered_data.csv           # Processed features
 │   └── *_preprocessed.csv                    # Train/test splits
 ├── Models/
-│   ├── stroke_model.pkl                      # Trained ML model
-│   ├── scaler.pkl                            # Feature scaler
+│   ├── stroke_model.pkl                      # Current (optimized) production model
+│   ├── stroke_model_improved.pkl             # Optimized XGBoost version
+│   ├── stroke_model_baseline.pkl             # Initial reference model
+│   ├── stroke_model_backup.pkl               # Previous model version
+│   ├── scaler.pkl                            # Feature normalization data
 │   ├── model_comparison.csv                  # Performance metrics
-│   └── shap_*.png                            # Explainability plots
+│   ├── model_performance_improved.csv        # Improved model stats
+│   ├── shap_*.png                            # Explainability plots
+│   └── lime_explanation.html                 # Local interpretability report
 ├── Notebooks/
 │   ├── data_preprocessing.ipynb              # Data cleaning + SMOTE
 │   ├── feature_engineering.ipynb             # Feature creation

@@ -22,10 +22,10 @@ SCALER_PATH = os.path.join(BASE_DIR, "Models", "scaler.pkl")
 try:
     model = joblib.load(MODEL_PATH)
     scaler = joblib.load(SCALER_PATH)
-    logging.info("✅ Model and scaler loaded successfully.")
+    logging.info("\nModel and scaler loaded successfully.")
 
 except Exception as e:
-    logging.error(f"❌ Error loading model or scaler: {e}")
+    logging.error(f"\nError loading model or scaler: {e}")
     model, scaler = None, None
 
 
@@ -37,7 +37,7 @@ def preprocess_input(data):
     """
     try:
         if scaler is None:
-            raise ValueError("❌ Scaler not loaded!")
+            raise ValueError("\nScaler not loaded!")
 
         feature_names = [
             'gender',
@@ -61,7 +61,7 @@ def preprocess_input(data):
         return scaled_data
 
     except Exception as e:
-        logging.error(f"❌ Error in preprocessing: {e}")
+        logging.error(f"\nError in preprocessing: {e}")
         raise
 
 
@@ -73,7 +73,7 @@ def predict_stroke(input_data):
     """
     try:
         if model is None:
-            raise ValueError("❌ Model not loaded!")
+            raise ValueError("\nModel not loaded!")
 
         # Preprocess input
         processed_data = preprocess_input(input_data)
@@ -87,9 +87,9 @@ def predict_stroke(input_data):
         # Adjust probability if manual risk score suggests higher risk
         # This helps when the model underestimates risk
         if manual_risk_score > proba:
-            logging.info(f"⚠️ Manual risk score ({manual_risk_score:.3f}) higher than model ({proba:.3f})")
+            logging.info(f"\nManual risk score ({manual_risk_score:.3f}) higher than model ({proba:.3f})")
             proba = (proba + manual_risk_score) / 2  # Average them
-            logging.info(f"✅ Adjusted probability to: {proba:.3f}")
+            logging.info(f"\nAdjusted probability to: {proba:.3f}")
         
         probability_percent = round(proba * 100, 2)
 
@@ -102,8 +102,8 @@ def predict_stroke(input_data):
         # Generate personalized recommendations
         recommendations = generate_recommendations(input_data, proba)
 
-        logging.info(f"✅ Stroke probability: {proba:.3f}")
-        logging.info(f"✅ Final prediction (0=Low, 1=High): {prediction}")
+        logging.info(f"\nStroke probability: {proba:.3f}")
+        logging.info(f"\nFinal prediction (0=Low, 1=High): {prediction}")
 
         return {
             'prediction': prediction,
@@ -113,7 +113,7 @@ def predict_stroke(input_data):
         }
 
     except Exception as e:
-        logging.error(f"❌ Prediction error: {e}")
+        logging.error(f"\nPrediction error: {e}")
         return {
             'prediction': -1,
             'probability': 0,

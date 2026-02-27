@@ -54,7 +54,7 @@ def init_db():
     
     conn.commit()
     conn.close()
-    print("✅ Database initialized successfully")
+    print("Database initialized successfully")
 
 def hash_password(password):
     """Hash password using SHA-256"""
