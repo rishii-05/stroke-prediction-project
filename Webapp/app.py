@@ -7,7 +7,6 @@ from database import (
     create_user, verify_user, get_user_by_id, 
     save_prediction, get_user_predictions, get_user_stats
 )
-
 import os
 
 app = Flask(__name__)

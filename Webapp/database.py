@@ -1,6 +1,6 @@
 """
 Database management for user authentication and prediction history
-Uses SQLite for simplicity - can be upgraded to PostgreSQL/MySQL for production
+Uses SQLite for simplicity and reliability
 """
 import sqlite3
 import hashlib
@@ -28,8 +28,7 @@ def init_db():
             email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             full_name TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            theme_preference TEXT DEFAULT 'light'
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     
@@ -54,7 +53,7 @@ def init_db():
     
     conn.commit()
     conn.close()
-    print("Database initialized successfully")
+    print("✓ Database initialized successfully")
 
 def hash_password(password):
     """Hash password using SHA-256"""
@@ -90,7 +89,7 @@ def verify_user(username, password):
     password_hash = hash_password(password)
     
     cursor.execute('''
-        SELECT id, username, email, full_name, theme_preference
+        SELECT id, username, email, full_name
         FROM users
         WHERE username = ? AND password_hash = ?
     ''', (username, password_hash))
@@ -108,7 +107,7 @@ def get_user_by_id(user_id):
     cursor = conn.cursor()
     
     cursor.execute('''
-        SELECT id, username, email, full_name, created_at, theme_preference
+        SELECT id, username, email, full_name, created_at
         FROM users
         WHERE id = ?
     ''', (user_id,))
@@ -117,20 +116,6 @@ def get_user_by_id(user_id):
     conn.close()
     
     return dict(user) if user else None
-
-def update_theme_preference(user_id, theme):
-    """Update user's theme preference"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        UPDATE users
-        SET theme_preference = ?
-        WHERE id = ?
-    ''', (theme, user_id))
-    
-    conn.commit()
-    conn.close()
 
 def save_prediction(user_id, input_data, prediction_result, probability):
     """Save prediction to history"""

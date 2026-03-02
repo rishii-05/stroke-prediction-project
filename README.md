@@ -209,22 +209,41 @@ Try these test cases:
 To retrain the model with new data:
 
 1. Open `Notebooks/model_training.ipynb`
-2. Run all cells
+2. Run all cells (this will regenerate both the model AND scaler)
 3. Review baseline vs improved comparison
 4. If performance improves:
    
-   Backup current model:
+   **Windows:**
    ```bash
-   copy Models/stroke_model.pkl Models/stroke_model_backup.pkl
+   # Backup current model
+   copy Models\stroke_model.pkl Models\stroke_model_backup.pkl
+   
+   # Replace with improved model
+   copy Models\stroke_model_improved.pkl Models\stroke_model.pkl
    ```
-   Replace with improved model:
+   
+   **Mac/Linux:**
    ```bash
-   copy Models/stroke_model_improved.pkl Models/stroke_model.pkl
+   # Backup current model
+   cp Models/stroke_model.pkl Models/stroke_model_backup.pkl
+   
+   # Replace with improved model
+   cp Models/stroke_model_improved.pkl Models/stroke_model.pkl
    ```
    
 5. Restart the web application
 
 ## 🐛 Troubleshooting
+
+**Error: "No module named 'flask'"**
+```bash
+# Make sure virtual environment is activated
+.\.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Mac/Linux
+
+# Install requirements
+pip install -r requirements.txt
+```
 
 **Error: "Database locked"**
 - Close any programs accessing the database
@@ -235,10 +254,6 @@ To retrain the model with new data:
 # In app.py, change port:
 app.run(debug=True, port=5001)
 ```
-
-**Model version warning:**
-- This is normal if scikit-learn versions differ
-- Model still works correctly
 
 ## ⚠️ Important Notice
 
